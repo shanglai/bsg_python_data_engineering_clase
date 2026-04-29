@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python para Ingeniería de Datos — BSG Institute</title>
+<link href="https://fonts.googleapis.com/css2?family=Franklin+Gothic+Medium&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bsg-navy:   #002060;
+    --bsg-blue:   #2C4290;
+    --bsg-green:  #AFCA0A;
+    --bsg-orange: #FF8800;
+    --bsg-white:  #FFFFFF;
+    --bsg-gray:   #595959;
+    --bsg-light:  #F5F5F5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #1a1a2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  /* ── NAV ─────────────────────────── */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 960px;
+  }
+
+  .nav-dots {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dot.active {
+    background: var(--bsg-green);
+    border-color: var(--bsg-green);
+    transform: scale(1.2);
+  }
+
+  .nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    user-select: none;
+  }
+
+  .nav-btn:hover { background: rgba(255,255,255,0.2); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .slide-counter {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* ── SLIDE CONTAINER ─────────────── */
+  .deck {
+    width: 100%;
+    max-width: 960px;
+    position: relative;
+  }
+
+  .slide {
+    display: none;
+    width: 100%;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .slide.active { display: flex; }
+
+  /* ── LOGO (all slides) ───────────── */
+  .logo-badge {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    z-index: 10;
+  }
+
+  .logo-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2.5px solid var(--bsg-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-circle-inner {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bsg-green);
+  }
+
+  .logo-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--bsg-gray);
+    letter-spacing: 0.02em;
+  }
+
+  .logo-text span { font-weight: 400; }
+
+  /* ── SLIDE 1: PORTADA DEL CURSO ──── */
+  #s1 {
+    background: var(--bsg-white);
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .s1-band {
+    position: absolute;
+    left: 0;
+    top: 28%;
+    width: 100%;
+    height: 38%;
+    background: var(--bsg-navy);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 60px;
+  }
+
+  .s1-overtitle {
+    font-size: clamp(10px, 1.4vw, 14px);
+    font-weight: 500;
+    color: var(--bsg-green);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .s1-title {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: clamp(22px, 3.8vw, 42px);
+    font-weight: 400;
+    color: var(--bsg-white);
+    line-height: 1.1;
+  }
+
+  .s1-subtitle {
+    position: absolute;
+    bottom: 14%;
+    left: 60px;
+    font-size: clamp(10px, 1.3vw, 13px);
+    color: var(--bsg-gray);
+  }
+
+  .s1-pill {
+    position: absolute;
+    bottom: 14%;
+    right: 60px;
+    background: var(--bsg-orange);
+    color: white;
+    font-size: clamp(9px, 1.1vw, 11px);
+    font-weight: 600;
+    padding: 5px 18px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .s1-band-accent {
+    position: absolute;
+    left: 0;
+    top: 28%;
+    width: 5px;
+    height: 38%;
+    background: var(--bsg-green);
+  }
+
+  /* ── SLIDE 2: PROFESOR ───────────── */
+  #s2 {
+    background: var(--bsg-white);
+    flex-direction: row;
+  }
+
+  .s2-left {
+    width: 38%;
+    background: var(--bsg-navy);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    position: relative;
+  }
+
+  .s2-left::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--bsg-green);
+  }
+
+  .s2-avatar {
+    width: clamp(60px, 9vw, 90px);
+    height: clamp(60px, 9vw, 90px);
+    border-radius: 50%;
+    background: var(--bsg-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(22px, 3.5vw, 36px);
+    font-weight: 700;
+    color: var(--bsg-navy);
+    margin-bottom: 16px;
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+  }
+
+  .s2-name {
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    font-size: clamp(14px, 2.2vw, 22px);
+    color: var(--bsg-white);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .s2-email {
+    font-size: clamp(9px, 1.1vw, 11px);
+    color: var(--bsg-green);
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+
+  .s2-right {
+    flex: 1;
+    padding: 40px 40px 40px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .s2-section-label {
+    font-size: clamp(8px, 1vw, 10px);
+    font-weight: 600;
+    color: var(--bsg-green);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .s2-heading {
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    font-size: clamp(16px, 2.5vw, 26px);
+    color: var(--bsg-navy);
+    margin-bottom: 20px;
+    line-height: 1.15;
+  }
+
+  .s2-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .s2-role {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .s2-role-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bsg-green);
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .s2-role-text {
+    font-size: clamp(10px, 1.4vw, 14px);
+    color: var(--bsg-gray);
+    line-height: 1.35;
+  }
+
+  .s2-role-text strong {
+    color: var(--bsg-navy);
+    font-weight: 600;
+  }
+
+  /* ── SLIDE 3: EVALUACIÓN ─────────── */
+  #s3 {
+    background: var(--bsg-white);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .s3-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 18%;
+    background: var(--bsg-navy);
+    display: flex;
+    align-items: center;
+    padding: 0 52px;
+  }
+
+  .s3-header-label {
+    font-size: clamp(8px, 1vw, 10px);
+    font-weight: 600;
+    color: var(--bsg-green);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-right: 16px;
+  }
+
+  .s3-header-title {
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    font-size: clamp(16px, 2.6vw, 28px);
+    color: var(--bsg-white);
+  }
+
+  .s3-left-accent {
+    position: absolute;
+    left: 0;
+    top: 18%;
+    width: 5px;
+    height: 82%;
+    background: var(--bsg-blue);
+  }
+
+  .s3-grid {
+    position: absolute;
+    top: 22%;
+    left: 52px;
+    right: 52px;
+    bottom: 12%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .s3-card {
+    background: var(--bsg-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--bsg-blue);
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .s3-pct {
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    color: var(--bsg-navy);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .s3-pct-label {
+    font-size: clamp(11px, 1.6vw, 16px);
+    font-weight: 600;
+    color: var(--bsg-blue);
+    margin-bottom: 4px;
+  }
+
+  .s3-pct-desc {
+    font-size: clamp(9px, 1.1vw, 11px);
+    color: var(--bsg-gray);
+    line-height: 1.4;
+  }
+
+  .s3-card:nth-child(1) { border-color: var(--bsg-navy); }
+  .s3-card:nth-child(2) { border-color: var(--bsg-blue); }
+  .s3-card:nth-child(3) { border-color: var(--bsg-green); }
+  .s3-card:nth-child(3) .s3-pct { color: #6a7c05; }
+  .s3-card:nth-child(4) { border-color: var(--bsg-orange); }
+  .s3-card:nth-child(4) .s3-pct { color: var(--bsg-orange); }
+
+  /* ── SLIDE 4: ESTUDIANTES ────────── */
+  #s4 {
+    background: var(--bsg-navy);
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .s4-accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--bsg-green);
+  }
+
+  .s4-content {
+    padding: 48px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .s4-label {
+    font-size: clamp(8px, 1vw, 10px);
+    font-weight: 600;
+    color: var(--bsg-green);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .s4-title {
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    font-size: clamp(22px, 3.8vw, 40px);
+    color: var(--bsg-white);
+    line-height: 1.1;
+    margin-bottom: 28px;
+  }
+
+  .s4-prompts {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .s4-prompt {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--bsg-green);
+  }
+
+  .s4-prompt-num {
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    font-size: clamp(16px, 2.5vw, 26px);
+    color: var(--bsg-green);
+    line-height: 1;
+    min-width: 28px;
+  }
+
+  .s4-prompt-text {
+    font-size: clamp(10px, 1.4vw, 14px);
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+  }
+
+  .s4-prompt-text strong {
+    color: var(--bsg-white);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* ── logo overrides per slide ────── */
+  #s2 .logo-badge,
+  #s4 .logo-badge { right: 28px; top: 20px; }
+  #s4 .logo-text { color: rgba(255,255,255,0.55); }
+  #s4 .logo-circle { border-color: var(--bsg-green); }
+
+  /* ── KEYBOARD HINT ───────────────── */
+  .hint {
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     SLIDE 1 — PORTADA DEL CURSO
+══════════════════════════════════════ -->
+<div class="deck">
+  <div class="slide active" id="s1">
+
+    <div class="logo-badge">
+      <div class="logo-circle"><div class="logo-circle-inner"></div></div>
+      <div class="logo-text"><strong>BSG</strong> <span>Institute</span></div>
+    </div>
+
+    <div class="s1-band-accent"></div>
+
+    <div class="s1-band">
+      <div class="s1-overtitle">BSG Institute · 2026</div>
+      <div class="s1-title">Python para<br>Ingeniería de Datos</div>
+    </div>
+
+    <div class="s1-subtitle">Capítulo 1 · Sesión de introducción</div>
+    <div class="s1-pill">INICIO DEL CURSO</div>
+
+  </div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 2 — PRESENTACIÓN DEL PROFESOR
+══════════════════════════════════════ -->
+  <div class="slide" id="s2">
+
+    <div class="logo-badge">
+      <div class="logo-circle"><div class="logo-circle-inner"></div></div>
+      <div class="logo-text"><strong>BSG</strong> <span>Institute</span></div>
+    </div>
+
+    <div class="s2-left">
+      <div class="s2-avatar">DL</div>
+      <div class="s2-name">David López</div>
+      <div class="s2-email">dalopeznoria@gmail.com</div>
+    </div>
+
+    <div class="s2-right">
+      <div class="s2-section-label">Tu instructor</div>
+      <div class="s2-heading">Profesional de datos<br>con enfoque en IA y arquitectura</div>
+      <div class="s2-roles">
+        <div class="s2-role">
+          <div class="s2-role-dot"></div>
+          <div class="s2-role-text"><strong>Arquitecto de datos</strong> — diseño de sistemas y pipelines a escala</div>
+        </div>
+        <div class="s2-role">
+          <div class="s2-role-dot"></div>
+          <div class="s2-role-text"><strong>Consultor de Agentes e IA</strong> — implementación de sistemas multiagente</div>
+        </div>
+        <div class="s2-role">
+          <div class="s2-role-dot"></div>
+          <div class="s2-role-text"><strong>Científico de datos</strong> — modelado y análisis avanzado</div>
+        </div>
+        <div class="s2-role">
+          <div class="s2-role-dot"></div>
+          <div class="s2-role-text"><strong>Gobierno de datos</strong> — implementador de modelos DAMA</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 3 — EVALUACIÓN
+══════════════════════════════════════ -->
+  <div class="slide" id="s3">
+
+    <div class="logo-badge">
+      <div class="logo-circle"><div class="logo-circle-inner"></div></div>
+      <div class="logo-text"><strong>BSG</strong> <span>Institute</span></div>
+    </div>
+
+    <div class="s3-header">
+      <div class="s3-header-label">Criterios</div>
+      <div class="s3-header-title">Evaluación del curso</div>
+    </div>
+
+    <div class="s3-left-accent"></div>
+
+    <div class="s3-grid">
+      <div class="s3-card">
+        <div class="s3-pct">25%</div>
+        <div class="s3-pct-label">Asistencia</div>
+        <div class="s3-pct-desc">Presencia en cada sesión del curso</div>
+      </div>
+      <div class="s3-card">
+        <div class="s3-pct">25%</div>
+        <div class="s3-pct-label">Participación</div>
+        <div class="s3-pct-desc">Preguntas, discusión y colaboración en clase</div>
+      </div>
+      <div class="s3-card">
+        <div class="s3-pct">25%</div>
+        <div class="s3-pct-label">Ejercicios y tareas</div>
+        <div class="s3-pct-desc">Prácticas por bloque y entregables semanales</div>
+      </div>
+      <div class="s3-card">
+        <div class="s3-pct">25%</div>
+        <div class="s3-pct-label">Proyecto final</div>
+        <div class="s3-pct-desc">Pipeline completo: datos → API → dashboard</div>
+      </div>
+    </div>
+
+  </div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 4 — PRESENTACIÓN ESTUDIANTES
+══════════════════════════════════════ -->
+  <div class="slide" id="s4">
+
+    <div class="logo-badge">
+      <div class="logo-circle"><div class="logo-circle-inner"></div></div>
+      <div class="logo-text"><strong>BSG</strong> <span>Institute</span></div>
+    </div>
+
+    <div class="s4-accent"></div>
+
+    <div class="s4-content">
+      <div class="s4-label">Ahora es tu turno</div>
+      <div class="s4-title">Preséntate con el grupo</div>
+      <div class="s4-prompts">
+        <div class="s4-prompt">
+          <div class="s4-prompt-num">1</div>
+          <div class="s4-prompt-text">
+            <strong>¿Quién eres?</strong>
+            Tu nombre y a qué te dedicas actualmente
+          </div>
+        </div>
+        <div class="s4-prompt">
+          <div class="s4-prompt-num">2</div>
+          <div class="s4-prompt-text">
+            <strong>¿Qué experiencia tienes con datos o programación?</strong>
+            Desde cero está perfecto — cuéntanos dónde estás hoy
+          </div>
+        </div>
+        <div class="s4-prompt">
+          <div class="s4-prompt-num">3</div>
+          <div class="s4-prompt-text">
+            <strong>¿Qué esperas lograr al terminar este curso?</strong>
+            Un proyecto, un rol, una habilidad — lo que sea que te trajo aquí
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── NAVEGACIÓN ─────────────────────── -->
+<div class="nav">
+  <button class="nav-btn" id="prev" onclick="changeSlide(-1)" disabled>&#8592;</button>
+  <div class="nav-dots">
+    <div class="dot active" onclick="goTo(0)"></div>
+    <div class="dot" onclick="goTo(1)"></div>
+    <div class="dot" onclick="goTo(2)"></div>
+    <div class="dot" onclick="goTo(3)"></div>
+  </div>
+  <span class="slide-counter" id="counter">1 / 4</span>
+  <button class="nav-btn" id="next" onclick="changeSlide(1)">&#8594;</button>
+</div>
+
+<div class="hint">← → para navegar · F11 para pantalla completa</div>
+
+<script>
+  var current = 0;
+  var slides = document.querySelectorAll('.slide');
+  var dots = document.querySelectorAll('.dot');
+  var total = slides.length;
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('prev').disabled = current === 0;
+    document.getElementById('next').disabled = current === total - 1;
+  }
+
+  function changeSlide(dir) {
+    var next = current + dir;
+    if (next >= 0 && next < total) goTo(next);
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  });
+</script>
+</body>
+</html>
