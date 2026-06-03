@@ -1,0 +1,16 @@
+# ============================================================
+# Sesión 10 — Streamlit Dashboard
+# Python para Ingeniería de Datos · BSG Institute
+# ============================================================
+# Instalar con:
+#   pip install -r requirements_s10.txt
+
+fastapi==0.115.5
+uvicorn==0.30.6
+pymysql==1.1.1
+cryptography==43.0.3
+httpx==0.27.2
+pandas==2.2.3
+plotly==5.24.1
+streamlit==1.39.0
+python-dotenv==1.0.1
