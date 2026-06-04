@@ -1,0 +1,36 @@
+# ============================================================
+# .dockerignore — Archivos excluidos de la imagen Docker
+# Funciona igual que .gitignore pero para Docker
+# ============================================================
+
+# Credenciales — NUNCA deben entrar a la imagen
+.env
+*.env
+
+# Entorno virtual — la imagen instala sus propias dependencias
+venv/
+.venv/
+env/
+
+# Notebooks y slides — la imagen solo necesita api.py
+*.ipynb
+*.md
+*.html
+*.css
+
+# Datos — no van en la imagen
+data/
+*.csv
+*.parquet
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Dashboard — la imagen solo contiene la API
+dashboard.py
