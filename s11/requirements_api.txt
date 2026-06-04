@@ -1,0 +1,12 @@
+# ============================================================
+# requirements_api.txt — Solo dependencias de la API
+# Este archivo va DENTRO de la imagen Docker
+# Es más pequeño que requirements_s11.txt porque no incluye
+# Streamlit, Plotly ni Jupyter — cosas que la API no necesita
+# ============================================================
+
+fastapi==0.115.5
+uvicorn==0.30.6
+pymysql==1.1.1
+cryptography==43.0.3
+python-dotenv==1.0.1
