@@ -15,7 +15,7 @@ sesion_12/
 
 ---
 
-## Paso 1 — Instalar Airflow (pedir que lo hagan al inicio de clase)
+## Paso 1 — Instalar Airflow (en el inicio de clase)
 
 ```bash
 # Activar venv
